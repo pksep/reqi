@@ -9,6 +9,16 @@ import { generateError } from '../errors/function';
  *
  * @constructor
  * @param baseUrl - основной путь по которому происходят запросы
+ *
+ * @example
+ * ```
+ * const api = new Reqi('http://localhost:5000/api');
+ *
+ * const response = await api.post('/auth/login', {
+ *   login: 'login',
+ *   password: 'password'
+ * })
+ *
  */
 export default class Reqi {
   constructor(private baseUrl: string = '') {
@@ -66,6 +76,148 @@ export default class Reqi {
   }
 
   /**
+   * Возвращает данные по указанному пути
+   * @param url
+   * @param parsed
+   * @param options
+   */
+  public async get<T = any>(
+    url: string,
+    parsed?: boolean,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<Response>;
+  /**
+   * Возвращает данные по указанному пути
+   *
+   * возвращает распаршенные данные (response.json() | response.blob() | response.text() | response.formData())
+   * @param url
+   * @param parsed
+   * @param options
+   */
+  public async get<T = any>(
+    url: string,
+    parsed: true,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<TResponse<T>>;
+  public async get<T = any>(
+    url: string,
+    parsed?: boolean,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<Response | TResponse<T>> {
+    const response = await this.sendRequest<T>(
+      url,
+      {
+        method: 'GET',
+        ...options
+      },
+      parsed
+    );
+
+    return response;
+  }
+
+  public async delete<T = any>(
+    url: string,
+    parsed?: boolean,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<Response>;
+  public async delete<T = any>(
+    url: string,
+    parsed: true,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<TResponse<T>>;
+  public async delete<T = any>(
+    url: string,
+    parsed?: boolean,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<Response | TResponse<T>> {
+    const response = await this.sendRequest<T>(
+      url,
+      {
+        method: 'DELETE',
+        ...options
+      },
+      parsed
+    );
+
+    return response;
+  }
+
+  public async put<T = any>(
+    url: string,
+    data: BodyInit | Object | null,
+    parsed?: boolean,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<Response>;
+  public async put<T = any>(
+    url: string,
+    data: BodyInit | Object | null,
+    parsed: true,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<TResponse<T>>;
+  public async put<T = any>(
+    url: string,
+    data: BodyInit | Object | null,
+    parsed?: boolean,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<Response | TResponse<T>> {
+    const response = await this.sendRequest<T>(
+      url,
+      {
+        method: 'PUT',
+        body: data,
+        ...options
+      },
+      parsed
+    );
+
+    return response;
+  }
+
+  public async patch<T = any>(
+    url: string,
+    data: BodyInit | Object | null,
+    parsed?: boolean,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<Response>;
+  public async patch<T = any>(
+    url: string,
+    data: BodyInit | Object | null,
+    parsed: true,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<TResponse<T>>;
+  public async patch<T = any>(
+    url: string,
+    data: BodyInit | Object | null,
+    parsed?: boolean,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<Response | TResponse<T>> {
+    const response = await this.sendRequest<T>(
+      url,
+      {
+        method: 'PATCH',
+        body: data,
+        ...options
+      },
+      parsed
+    );
+
+    return response;
+  }
+
+  public async head<T = any>(
+    url: string,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<Response> {
+    const response = await this.sendRequest<T>(url, {
+      method: 'HEAD',
+      ...options
+    });
+
+    return response;
+  }
+
+  /**
    * Отправляет запрос с указанными параметрами
    *
    * Возвращает распаршенные данные (response.json() | response.blob() | response.text() | response.formData())
@@ -73,9 +225,9 @@ export default class Reqi {
    * @param request
    * @returns
    */
-  private async sendRequest<T = any>(
+  public async sendRequest<T = any>(
     url: string,
-    request: Omit<RequestInit, 'body'> & { body: BodyInit | Object | null },
+    request: Omit<RequestInit, 'body'> & { body?: BodyInit | Object | null },
     parsed: true
   ): Promise<TResponse<T>>;
   /**
@@ -86,14 +238,14 @@ export default class Reqi {
    * @param request
    * @returns {Reponse}
    */
-  private async sendRequest<T = any>(
+  public async sendRequest<T = any>(
     url: string,
-    request: Omit<RequestInit, 'body'> & { body: BodyInit | Object | null },
+    request: Omit<RequestInit, 'body'> & { body?: BodyInit | Object | null },
     parsed?: boolean
   ): Promise<Response>;
-  private async sendRequest<T>(
+  public async sendRequest<T = any>(
     url: string,
-    request: Omit<RequestInit, 'body'> & { body: BodyInit | Object | null },
+    request: Omit<RequestInit, 'body'> & { body?: BodyInit | Object | null },
     parsed?: boolean
   ): Promise<TResponse<T> | Response> {
     // Создаем заголовки

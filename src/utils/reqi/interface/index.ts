@@ -1,1 +1,1 @@
-export type TResponse<T extends any> = T | Blob | FormData | string;
+export type TResponse<T extends any = any> = T | Blob | FormData | string;

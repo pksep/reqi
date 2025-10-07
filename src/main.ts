@@ -33,6 +33,16 @@ if (import.meta.env.DEV) {
     return response;
   };
 
+  const deletePost = async (): Promise<void> => {
+    try {
+      const response = await api.delete('/posts/1');
+
+      console.log(response, await response.json());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const errorPost = async (): Promise<void> => {
     try {
       await api.post('/postsr', {
@@ -79,7 +89,10 @@ if (import.meta.env.DEV) {
       
       <div class="flex">
       <button class="send-post">Отправить запрос</button>
+      
       <button class="send-post-pars">Отправить запрос c автоматическим парсом</button>
+
+      <button class="delete-post">Удалить пост</button>
       </div>
 
       <div class="border">
@@ -105,5 +118,6 @@ if (import.meta.env.DEV) {
       ?.addEventListener('click', sendParsedPost);
     root.querySelector('.error-send')?.addEventListener('click', errorPost);
     root.querySelector('.dev-auth')?.addEventListener('click', auth);
+    root.querySelector('.delete-post')?.addEventListener('click', deletePost);
   }
 }
