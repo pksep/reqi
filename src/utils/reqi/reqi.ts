@@ -1,8 +1,8 @@
 import { decompressJson } from '@sep-erp-server/zod-shared';
-import HttpError from '../errors/http-error/http-error';
 import { parse } from 'content-type';
 import type { TResponse } from './interface';
 import { generateError } from '../errors/function';
+import { HttpError } from '../errors/http-error/http-error';
 
 /**
  * Класс для работы с API
@@ -20,7 +20,7 @@ import { generateError } from '../errors/function';
  * })
  *
  */
-export default class Reqi {
+export class Reqi {
   private requestInterseptions: Array<
     (request: Request) => Promise<Request> | Request
   > = [];

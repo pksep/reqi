@@ -1,13 +1,13 @@
-import ClientError from '../client-error/client-error';
-import HttpError from '../http-error/http-error';
+import { ClientError } from '../client-error/client-error';
+import { HttpError } from '../http-error/http-error';
 import type {
   IZodValidationError,
   TClientError,
   TResponseError
 } from '../interface';
-import NotFoundError from '../not-found-error/not-found-error';
-import ServerError from '../server-error/server-error';
-import ValidationError from '../validation-error/validation-error';
+import { NotFoundError } from '../not-found-error/not-found-error';
+import { ServerError } from '../server-error/server-error';
+import { ValidationError } from '../validation-error/validation-error';
 
 export const generateError = async (
   response: Response
@@ -22,7 +22,7 @@ export const generateError = async (
     return new ServerError(status, response.statusText);
   }
 
-  return new HttpError(500, 'Unknown response type');
+  return new HttpError(response.status || 500, 'Unknown response type');
 };
 
 const generateClientError = async (

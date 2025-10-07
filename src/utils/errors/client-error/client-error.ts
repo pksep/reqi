@@ -1,6 +1,6 @@
-import HttpError from '../http-error/http-error';
+import { HttpError } from '../http-error/http-error';
 
-export default class ClientError extends HttpError {
+export class ClientError extends HttpError {
   constructor(public status: number, message: string) {
     message = message || 'Client error';
     super(status, message);

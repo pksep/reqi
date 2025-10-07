@@ -2,7 +2,7 @@
 
 import { isHttpError } from './utils/errors/http-error/http-error';
 import { isValidationError } from './utils/errors/validation-error/validation-error';
-import Reqi from './utils/reqi/reqi';
+import { Reqi } from './utils/reqi/reqi';
 
 // (он просто манипулирует DOM для проверки)
 if (import.meta.env.DEV) {

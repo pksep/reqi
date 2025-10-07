@@ -1,7 +1,7 @@
-import ClientError from '../client-error/client-error';
+import { ClientError } from '../client-error/client-error';
 import type { IZodValidationError } from '../interface';
 
-export default class ValidationError<
+export class ValidationError<
   TFields extends string = string
 > extends ClientError {
   errorMessages: string[] = [];
