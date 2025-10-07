@@ -1,4 +1,6 @@
-import HttpError, { isHttpError } from '../errors/http-error/http-error';
+import { decompressJson } from '@sep-erp-server/zod-shared';
+import HttpError from '../errors/http-error/http-error';
+import { parse } from 'content-type';
 import type { TResponse } from './interface';
 
 /**
@@ -12,20 +14,54 @@ export default class Reqi {
     this.baseUrl = baseUrl;
   }
 
+  /**
+   * Отправляет запрос с методом POST
+   *
+   *
+   * @param url Путь
+   * @param data Данные для отправки
+   * @param parsed Флаг парсинга
+   * @param options Дополнительные параметры
+   * @returns {Response}
+   */
   public async post<T extends any>(
     url: string,
     data: BodyInit | Object | null,
+    parsed?: boolean,
     options?: Omit<RequestInit, 'body' | 'method'>
-  ): Promise<T> {
-    const response = await this.sendRequest(url, {
-      method: 'POST',
-      body: data,
-      ...options
-    });
+  ): Promise<Response>;
+  /**
+   * Отправляет запрос с методом POST
+   *
+   * Возвращает распаршенные данные (response.json() | response.blob() | response.text() | response.formData())
+   * @param url Путь
+   * @param data Данные для отправки
+   * @param parsed Флаг парсинга
+   * @param options Дополнительные параметры
+   */
+  public async post<T extends any>(
+    url: string,
+    data: BodyInit | Object | null,
+    parsed: true,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<TResponse<T>>;
+  public async post<T extends any>(
+    url: string,
+    data: BodyInit | Object | null,
+    parsed?: boolean,
+    options?: Omit<RequestInit, 'body' | 'method'>
+  ): Promise<Response | TResponse<T>> {
+    const response = await this.sendRequest<T>(
+      url,
+      {
+        method: 'POST',
+        body: data,
+        ...options
+      },
+      parsed
+    );
 
-    const json = await response.json();
-
-    return json;
+    return response;
   }
 
   /**
@@ -34,10 +70,21 @@ export default class Reqi {
    * @param request
    * @returns
    */
-  private async sendRequest(
+  private async sendRequest<T extends any>(
     url: string,
-    request: Omit<RequestInit, 'body'> & { body: BodyInit | Object | null }
-  ): Promise<Response> {
+    request: Omit<RequestInit, 'body'> & { body: BodyInit | Object | null },
+    parsed: true
+  ): Promise<TResponse<T>>;
+  private async sendRequest<T extends any>(
+    url: string,
+    request: Omit<RequestInit, 'body'> & { body: BodyInit | Object | null },
+    parsed?: boolean
+  ): Promise<Response>;
+  private async sendRequest<T>(
+    url: string,
+    request: Omit<RequestInit, 'body'> & { body: BodyInit | Object | null },
+    parsed?: boolean
+  ): Promise<TResponse<T> | Response> {
     const headers = new Headers(request?.headers || {});
 
     let formatedBody = null;
@@ -47,14 +94,13 @@ export default class Reqi {
       headers.set('Content-Type', 'application/json');
     }
 
-    const response = await fetch(this.baseUrl + url, {
+    const response = await this._sendRequest(url, {
       ...request,
       body: formatedBody,
       headers
     });
 
     if (!response.ok) {
-      console.log(response);
       let message = response.statusText;
 
       const json = await response.json();
@@ -66,6 +112,92 @@ export default class Reqi {
       throw new HttpError(response.status, message);
     }
 
+    if (parsed) {
+      const result = await this.getData<T>(response);
+
+      return result;
+    }
+
     return response;
+  }
+
+  /**
+   * Отправляет запрос по указанному пути
+   * @param url
+   * @param request
+   * @returns
+   */
+  private async _sendRequest(
+    url: string,
+    request: RequestInit
+  ): Promise<Response> {
+    const response = await fetch(this.baseUrl + url, {
+      ...request
+    });
+
+    return response;
+  }
+
+  /**
+   * Возращает данные в зависимости от типа из response
+   * @param response
+   * @returns
+   */
+  private async getData<T extends any>(
+    response: Response
+  ): Promise<TResponse<T>> {
+    const encoding = response.headers.get('content-encoding');
+    if (encoding === 'lz-string') {
+      return await this.getComressedData<T>(response);
+    }
+
+    // Получаем тип возвращаемого контента
+    const type = parse(response.headers.get('Content-Type') || 'text/html');
+
+    // Если тип json, то возвращаем json
+    if (type.type === 'application/json') {
+      if (response.json) {
+        return await response?.json();
+      }
+
+      // возвращаем blob формат
+    } else if (type.type === 'application/octet-stream') {
+      if (response.blob) {
+        return await response?.blob();
+      }
+
+      // Возраваем formData
+    } else if (type.type === 'multipart/form-data') {
+      if (response.formData) {
+        return await response?.formData();
+      }
+
+      // в остальных случаях поулчаем text
+    } else {
+      if (response.text) {
+        return await response.text();
+      }
+    }
+
+    throw new HttpError(500, 'Unknown response type');
+  }
+
+  /**
+   * Возращает декомпрессованные данные
+   * @param response
+   * @returns
+   */
+  private async getComressedData<T extends any>(
+    response: Response
+  ): Promise<T> {
+    try {
+      const compressedData = await response.text();
+      const decompressedData = decompressJson(compressedData);
+      const parsedData = JSON.parse(decompressedData);
+
+      return parsedData;
+    } catch (error) {
+      throw new HttpError(500, 'Unknown response type');
+    }
   }
 }
