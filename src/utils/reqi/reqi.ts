@@ -21,6 +21,39 @@ import { generateError } from '../errors/function';
  *
  */
 export default class Reqi {
+  private requestInterseptions: Array<(request: Request) => Awaited<Request>> =
+    [];
+
+  private responseInterseptions: Array<
+    (response: Response) => Awaited<Response>
+  > = [];
+
+  // Добавляем перехватчик для обработки запроса
+  request = {
+    /**
+     * Добавляет перехватчик для обработки запроса
+     *
+     * Выполняется перед отправкой запроса
+     * @param interseption
+     */
+    use: (interseption: (request: Request) => Request) => {
+      this.requestInterseptions.push(interseption);
+    }
+  };
+
+  // Добавляем перехватчик для обработки ответа
+  response = {
+    /**
+     * Добавляет перехватчик для обработки ответа
+     *
+     * Выполняется сразу после получения ответа
+     * @param interseption
+     */
+    use: (interseption: (response: Response) => Response) => {
+      this.responseInterseptions.push(interseption);
+    }
+  };
+
   constructor(private baseUrl: string = '') {
     this.baseUrl = baseUrl;
   }
@@ -294,8 +327,18 @@ export default class Reqi {
     url: string,
     request: RequestInit
   ): Promise<Response> {
-    const response = await fetch(this.baseUrl + url, {
-      ...request
+    let req = new Request(this.baseUrl + url, request);
+
+    // Проходим через все интерсепшены
+    this.requestInterseptions.forEach(interseption => {
+      req = interseption(req);
+    });
+
+    let response = await fetch(req);
+
+    // Проходим через все интерсепшены
+    this.responseInterseptions.forEach(interseption => {
+      response = interseption(response);
     });
 
     return response;

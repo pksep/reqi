@@ -11,26 +11,48 @@ if (import.meta.env.DEV) {
   const api = new Reqi('https://jsonplaceholder.typicode.com');
 
   const sendPost = async (): Promise<void> => {
-    const response = await api.post('/posts', {
-      message: 'Hello world'
-    });
+    try {
+      const response = await api.post('/posts', {
+        message: 'Hello world'
+      });
 
-    console.log('sendPost:response', response);
-    console.log('sendPost:json', await response.json());
+      const json = await response.json();
+
+      console.log('sendPost:response', response);
+      console.log('sendPost:json', json);
+    } catch (error) {
+      if (isHttpError(error)) {
+        console.log('status:', error.status);
+        console.log('message:', error.message);
+        throw error;
+      }
+
+      throw new Error('error');
+    }
   };
 
   const sendParsedPost = async (): Promise<{ message: string; id: number }> => {
-    const response = await api.post(
-      '/posts',
-      {
-        message: 'Hello world'
-      },
-      true
-    );
+    try {
+      const response = await api.post(
+        '/posts',
+        {
+          message: 'Hello world'
+        },
+        true
+      );
 
-    console.log(response);
+      console.log(response);
 
-    return response;
+      return response;
+    } catch (error) {
+      if (isHttpError(error)) {
+        console.log('status:', error.status);
+        console.log('message:', error.message);
+        throw error;
+      }
+
+      throw new Error('error');
+    }
   };
 
   const deletePost = async (): Promise<void> => {
@@ -59,6 +81,20 @@ if (import.meta.env.DEV) {
   };
 
   const sepDevApi = new Reqi('http://localhost:5000/api');
+
+  sepDevApi.request.use(request => {
+    request.headers.set('Authorization', 'token');
+
+    return request;
+  });
+
+  sepDevApi.response.use(response => {
+    if (!response.ok) {
+      console.log('Тут типа логировать можно');
+    }
+
+    return response;
+  });
 
   // Интерфейс для проверки типизации
   interface testAuthValidate {
