@@ -1,6 +1,7 @@
 // ✅ Код ниже выполняется только при запуске через `vite dev`
 
-import HttpError, { isHttpError } from './utils/errors/http-error/http-error';
+import { isHttpError } from './utils/errors/http-error/http-error';
+import { isValidationError } from './utils/errors/validation-error/validation-error';
 import Reqi from './utils/reqi/reqi';
 
 // (он просто манипулирует DOM для проверки)
@@ -19,7 +20,7 @@ if (import.meta.env.DEV) {
   };
 
   const sendParsedPost = async (): Promise<{ message: string; id: number }> => {
-    const response = await api.post<{ message: string; id: number }>(
+    const response = await api.post(
       '/posts',
       {
         message: 'Hello world'
@@ -27,13 +28,9 @@ if (import.meta.env.DEV) {
       true
     );
 
-    if (typeof response === 'object' && 'message' in response) {
-      console.log('sendParsedPost:response', response);
+    console.log(response);
 
-      return response;
-    }
-
-    throw new HttpError(500, 'Unknown response type');
+    return response;
   };
 
   const errorPost = async (): Promise<void> => {
@@ -47,6 +44,30 @@ if (import.meta.env.DEV) {
       if (isHttpError(error)) {
         console.log('status:', error.status);
         console.log('message:', error.message);
+      }
+    }
+  };
+
+  const sepDevApi = new Reqi('http://localhost:5000/api');
+
+  // Интерфейс для проверки типизации
+  interface testAuthValidate {
+    login?: string;
+    tabel?: string;
+    password?: string;
+  }
+
+  const auth = async (): Promise<void> => {
+    try {
+      await sepDevApi.post('/auth/login', {
+        tabel: '001'
+      });
+    } catch (error) {
+      console.log(error);
+
+      if (isValidationError<keyof testAuthValidate>(error)) {
+        console.log(error.errors.login);
+        console.log(error.message);
       }
     }
   };
@@ -68,6 +89,14 @@ if (import.meta.env.DEV) {
           Отправить ошибочный запрос
         </button>
       </div>
+
+      <div class="border">
+        <h2>Запрос на локальный dev сервер localhost:5000</h2>
+
+        <button class="dev-auth">
+          авторизация с ошибкой
+        </button>
+      </div>
     `;
 
     root.querySelector('.send-post')?.addEventListener('click', sendPost);
@@ -75,5 +104,6 @@ if (import.meta.env.DEV) {
       .querySelector('.send-post-pars')
       ?.addEventListener('click', sendParsedPost);
     root.querySelector('.error-send')?.addEventListener('click', errorPost);
+    root.querySelector('.dev-auth')?.addEventListener('click', auth);
   }
 }

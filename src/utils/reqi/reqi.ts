@@ -2,6 +2,7 @@ import { decompressJson } from '@sep-erp-server/zod-shared';
 import HttpError from '../errors/http-error/http-error';
 import { parse } from 'content-type';
 import type { TResponse } from './interface';
+import { generateError } from '../errors/function';
 
 /**
  * Класс для работы с API
@@ -24,7 +25,7 @@ export default class Reqi {
    * @param options Дополнительные параметры
    * @returns {Response}
    */
-  public async post<T extends any>(
+  public async post<T = any>(
     url: string,
     data: BodyInit | Object | null,
     parsed?: boolean,
@@ -39,13 +40,13 @@ export default class Reqi {
    * @param parsed Флаг парсинга
    * @param options Дополнительные параметры
    */
-  public async post<T extends any>(
+  public async post<T = any>(
     url: string,
     data: BodyInit | Object | null,
     parsed: true,
     options?: Omit<RequestInit, 'body' | 'method'>
   ): Promise<TResponse<T>>;
-  public async post<T extends any>(
+  public async post<T = any>(
     url: string,
     data: BodyInit | Object | null,
     parsed?: boolean,
@@ -66,16 +67,26 @@ export default class Reqi {
 
   /**
    * Отправляет запрос с указанными параметрами
+   *
+   * Возвращает распаршенные данные (response.json() | response.blob() | response.text() | response.formData())
    * @param url
    * @param request
    * @returns
    */
-  private async sendRequest<T extends any>(
+  private async sendRequest<T = any>(
     url: string,
     request: Omit<RequestInit, 'body'> & { body: BodyInit | Object | null },
     parsed: true
   ): Promise<TResponse<T>>;
-  private async sendRequest<T extends any>(
+  /**
+   * Отправляет запрос с указанными параметрами
+   *
+   * Возвращает response
+   * @param url
+   * @param request
+   * @returns {Reponse}
+   */
+  private async sendRequest<T = any>(
     url: string,
     request: Omit<RequestInit, 'body'> & { body: BodyInit | Object | null },
     parsed?: boolean
@@ -85,39 +96,39 @@ export default class Reqi {
     request: Omit<RequestInit, 'body'> & { body: BodyInit | Object | null },
     parsed?: boolean
   ): Promise<TResponse<T> | Response> {
+    // Создаем заголовки
     const headers = new Headers(request?.headers || {});
 
     let formatedBody = null;
 
+    // Если передан объект, то преобразуем его в json
     if (typeof request.body === 'object') {
       formatedBody = JSON.stringify(request.body);
       headers.set('Content-Type', 'application/json');
+    } else {
+      formatedBody = request.body;
     }
 
+    // Отправляем запрос
     const response = await this._sendRequest(url, {
       ...request,
       body: formatedBody,
       headers
     });
 
+    // Обрабатываем ошибки
     if (!response.ok) {
-      let message = response.statusText;
-
-      const json = await response.json();
-
-      if (json.message) {
-        message = json.message;
-      }
-
-      throw new HttpError(response.status, message);
+      throw await generateError(response);
     }
 
+    // Если указан флаг парсинга, то парсим данные
     if (parsed) {
       const result = await this.getData<T>(response);
 
       return result;
     }
 
+    // возвращаем response
     return response;
   }
 
@@ -143,9 +154,7 @@ export default class Reqi {
    * @param response
    * @returns
    */
-  private async getData<T extends any>(
-    response: Response
-  ): Promise<TResponse<T>> {
+  private async getData<T = any>(response: Response): Promise<TResponse<T>> {
     const encoding = response.headers.get('content-encoding');
     if (encoding === 'lz-string') {
       return await this.getComressedData<T>(response);
@@ -187,9 +196,7 @@ export default class Reqi {
    * @param response
    * @returns
    */
-  private async getComressedData<T extends any>(
-    response: Response
-  ): Promise<T> {
+  private async getComressedData<T = any>(response: Response): Promise<T> {
     try {
       const compressedData = await response.text();
       const decompressedData = decompressJson(compressedData);
