@@ -74,3 +74,32 @@ try {
   }
 }
 ```
+
+### Работа с декодером
+
+в любой запрос необходимо добавить parsed = true
+
+```ts
+await api.post(
+  '/posts',
+  {
+    message: 'Hello world'
+  },
+  // parsed = true
+  true
+);
+```
+
+### Работа с дополнительными параметрами
+
+```ts
+await api.post('/posts', {
+  message: 'Hello world'
+}, false, {
+  headers: {
+    ...
+  },
+  credentials: 'include',
+  ...
+});
+```
