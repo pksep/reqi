@@ -1,12 +1,13 @@
-import path from "path";
-import { defineConfig } from "vite";
+import path from 'path';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve(__dirname, "src/index.ts"),
-      name: "sep-reqi",
-      fileName: (format) => `sep-reqi.${format}.js`
+      entry: path.resolve(__dirname, 'src/index.ts'),
+      name: 'pksep-reqi',
+      fileName: () => `index.js`,
+      formats: ['es', 'cjs']
     }
   }
-})
+});
