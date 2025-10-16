@@ -57,7 +57,10 @@ export class Reqi {
     }
   };
 
-  constructor(private baseUrl: string = '') {
+  constructor(
+    private baseUrl: string = '',
+    private requestOptions?: Omit<RequestInit, 'body' | 'method' | 'signal'>
+  ) {
     this.baseUrl = baseUrl;
   }
 
@@ -330,7 +333,22 @@ export class Reqi {
     url: string,
     request: RequestInit
   ): Promise<Response> {
-    let req = new Request(this.baseUrl + url, request);
+    console.log(this.requestOptions, request);
+
+    let req = new Request(
+      this.baseUrl + url,
+      // сливаем все заголовки, заданыне при создание instance и заголовки из запроса
+      {
+        ...this.requestOptions,
+        ...request,
+        headers: {
+          ...this.requestOptions?.headers,
+          ...request?.headers
+        }
+      }
+    );
+
+    console.log(req);
 
     // Проходим через все интерсепшены
     for (const interseption of this.requestInterseptions) {
@@ -338,6 +356,7 @@ export class Reqi {
     }
 
     let response = await fetch(req);
+    console.log(response);
 
     // Проходим через все интерсепшены
     for (const interseption of this.responseInterseptions) {

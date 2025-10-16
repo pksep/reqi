@@ -1,8 +1,27 @@
 // ✅ Код ниже выполняется только при запуске через `vite dev`
 
+import { Reqi } from './utils/reqi/reqi';
+
 // (он просто манипулирует DOM для проверки)
 if (import.meta.env.DEV) {
   const root = document.getElementById('app');
+
+  const api = new Reqi('https://jsonplaceholder.typicode.com', {
+    credentials: 'include',
+    cache: 'force-cache'
+  });
+
+  const sendPost = async () => {
+    const res = await api.post(
+      '/posts',
+      {
+        message: 'hello worl'
+      },
+      false
+    );
+
+    console.log(res);
+  };
 
   if (root) {
     root.innerHTML = `
@@ -33,5 +52,9 @@ if (import.meta.env.DEV) {
         </button>
       </div>
     `;
+
+    root
+      .querySelector<HTMLButtonElement>('.send-post')
+      ?.addEventListener('click', sendPost);
   }
 }
