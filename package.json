@@ -1,6 +1,6 @@
 {
   "name": "@pksep/reqi",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "type": "module",
   "main": "./dist/pksep-reqi.umd.js",
   "module": "./dist/pksep-reqi.js",
