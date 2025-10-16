@@ -8,6 +8,11 @@ export default defineConfig({
       name: 'pksep-reqi',
       fileName: () => `index.js`,
       formats: ['es', 'cjs']
+    },
+    rollupOptions: {
+      output: {
+        exports: 'named'
+      }
     }
   }
 });
