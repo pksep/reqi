@@ -333,8 +333,6 @@ export class Reqi {
     url: string,
     request: RequestInit
   ): Promise<Response> {
-    console.log(this.requestOptions, request);
-
     let req = new Request(
       this.baseUrl + url,
       // сливаем все заголовки, заданыне при создание instance и заголовки из запроса
@@ -348,15 +346,12 @@ export class Reqi {
       }
     );
 
-    console.log(req);
-
     // Проходим через все интерсепшены
     for (const interseption of this.requestInterseptions) {
       req = await interseption(req);
     }
 
     let response = await fetch(req);
-    console.log(response);
 
     // Проходим через все интерсепшены
     for (const interseption of this.responseInterseptions) {
