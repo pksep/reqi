@@ -2,11 +2,17 @@
   "name": "@pksep/reqi",
   "version": "0.0.8",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "main": "./dist/pksep-reqi.umg.js",
+  "module": "./dist/pksep-reqi.es.js",
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "import": "./dist/pksep-reqi.es.js",
+      "require": "./dist/pksep-reqi.umg.js"
+    }
+}
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/pksep/reqi"
   },

@@ -6,13 +6,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'pksep-reqi',
-      fileName: () => `index.js`,
-      formats: ['es']
-    },
-    rollupOptions: {
-      output: {
-        exports: 'named'
-      }
+      fileName: format => `pksep-reqi.${format}.js`
     }
   }
 });
