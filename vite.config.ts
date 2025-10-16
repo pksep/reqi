@@ -7,7 +7,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'pksep-reqi',
       fileName: () => `index.js`,
-      formats: ['es', 'cjs']
+      formats: ['es']
     },
     rollupOptions: {
       output: {
