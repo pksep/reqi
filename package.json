@@ -3,10 +3,7 @@
   "version": "0.0.1",
   "type": "module",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/pksep/reqi"
-  },
-  "repository": {
-    "url": "https://github.com/pksep/reqi"
+    "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
     "dev": "vite",
