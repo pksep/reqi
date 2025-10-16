@@ -3,6 +3,7 @@ import { parse } from 'content-type';
 import type { TResponse } from './interface';
 import { generateError } from '../errors/function';
 import { HttpError } from '../errors/http-error/http-error';
+import { mergeHeaders } from '../functions/merge-headers';
 
 /**
  * Класс для работы с API
@@ -333,16 +334,18 @@ export class Reqi {
     url: string,
     request: RequestInit
   ): Promise<Response> {
+    const headers = mergeHeaders(
+      this.requestOptions?.headers,
+      request?.headers
+    );
+
     let req = new Request(
       this.baseUrl + url,
       // сливаем все заголовки, заданыне при создание instance и заголовки из запроса
       {
         ...this.requestOptions,
         ...request,
-        headers: {
-          ...this.requestOptions?.headers,
-          ...request?.headers
-        }
+        headers
       }
     );
 
