@@ -1,7 +1,7 @@
-import type ClientError from '../client-error/client-error';
-import type HttpError from '../http-error/http-error';
-import type ServerError from '../server-error/server-error';
-import type ValidationError from '../validation-error/validation-error';
+import type { ClientError } from '../client-error/client-error';
+import type { HttpError } from '../http-error/http-error';
+import type { ServerError } from '../server-error/server-error';
+import type { ValidationError } from '../validation-error/validation-error';
 
 export type TResponseError =
   | ValidationError
