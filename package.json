@@ -1,7 +1,13 @@
 {
-  "name": "sep-reqi",
+  "name": "@sep/reqi",
   "version": "0.0.1",
   "type": "module",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/pksep/reqi"
+  },
+  "repository": {
+    "url": "https://github.com/pksep/reqi"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
