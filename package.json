@@ -1,6 +1,6 @@
 {
   "name": "@pksep/reqi",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "main": "dist/index.js",
   "files": [
@@ -16,7 +16,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "publish": "pnpm build && pnpm publish"
+    "published": "pnpm build && pnpm publish"
   },
   "devDependencies": {
     "@types/content-type": "^1.1.9",
