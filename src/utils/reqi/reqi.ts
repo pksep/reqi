@@ -68,6 +68,23 @@ export class Reqi {
   /**
    * Отправляет запрос с методом POST
    *
+   * Возвращает распаршенные данные (response.json() | response.blob() | response.text() | response.formData())
+   * @param url Путь
+   * @param data Данные для отправки
+   * @param parsed Флаг парсинга
+   * @param options Дополнительные параметры
+   */
+  public async post<T = any>(
+    url: string,
+    data: BodyInit | Object | null,
+    options: {
+      parsed: true;
+      requset?: Omit<RequestInit, 'body' | 'method'>;
+    }
+  ): Promise<TResponse<T>>;
+  /**
+   * Отправляет запрос с методом POST
+   *
    *
    * @param url Путь
    * @param data Данные для отправки
@@ -83,23 +100,7 @@ export class Reqi {
       requset?: Omit<RequestInit, 'body' | 'method'>;
     }
   ): Promise<Response>;
-  /**
-   * Отправляет запрос с методом POST
-   *
-   * Возвращает распаршенные данные (response.json() | response.blob() | response.text() | response.formData())
-   * @param url Путь
-   * @param data Данные для отправки
-   * @param parsed Флаг парсинга
-   * @param options Дополнительные параметры
-   */
-  public async post<T = any>(
-    url: string,
-    data: BodyInit | Object | null,
-    options?: {
-      parsed: true;
-      requset?: Omit<RequestInit, 'body' | 'method'>;
-    }
-  ): Promise<TResponse<T>>;
+
   public async post<T = any>(
     url: string,
     data: BodyInit | Object | null,
@@ -122,6 +123,21 @@ export class Reqi {
 
   /**
    * Возвращает данные по указанному пути
+   *
+   * возвращает распаршенные данные (response.json() | response.blob() | response.text() | response.formData())
+   * @param url
+   * @param parsed
+   * @param options
+   */
+  public async get<T = any>(
+    url: string,
+    options: {
+      parsed: true;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
+  ): Promise<TResponse<T>>;
+  /**
+   * Возвращает данные по указанному пути
    * @param url
    * @param parsed
    * @param options
@@ -133,21 +149,7 @@ export class Reqi {
       request?: Omit<RequestInit, 'body' | 'method'>;
     }
   ): Promise<Response>;
-  /**
-   * Возвращает данные по указанному пути
-   *
-   * возвращает распаршенные данные (response.json() | response.blob() | response.text() | response.formData())
-   * @param url
-   * @param parsed
-   * @param options
-   */
-  public async get<T = any>(
-    url: string,
-    options?: {
-      parsed: true;
-      request?: Omit<RequestInit, 'body' | 'method'>;
-    }
-  ): Promise<TResponse<T>>;
+
   public async get<T = any>(
     url: string,
     options?: {
@@ -168,18 +170,18 @@ export class Reqi {
 
   public async delete<T = any>(
     url: string,
+    options: {
+      parsed: true;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
+  ): Promise<TResponse<T>>;
+  public async delete<T = any>(
+    url: string,
     options?: {
       parsed?: boolean;
       request?: Omit<RequestInit, 'body' | 'method'>;
     }
   ): Promise<Response>;
-  public async delete<T = any>(
-    url: string,
-    options?: {
-      parsed: true;
-      request?: Omit<RequestInit, 'body' | 'method'>;
-    }
-  ): Promise<TResponse<T>>;
   public async delete<T = any>(
     url: string,
     options?: {
@@ -201,19 +203,19 @@ export class Reqi {
   public async put<T = any>(
     url: string,
     data: BodyInit | Object | null,
+    options: {
+      parsed: true;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
+  ): Promise<TResponse<T>>;
+  public async put<T = any>(
+    url: string,
+    data: BodyInit | Object | null,
     options?: {
       parsed?: boolean;
       request?: Omit<RequestInit, 'body' | 'method'>;
     }
   ): Promise<Response>;
-  public async put<T = any>(
-    url: string,
-    data: BodyInit | Object | null,
-    options?: {
-      parsed: true;
-      request?: Omit<RequestInit, 'body' | 'method'>;
-    }
-  ): Promise<TResponse<T>>;
   public async put<T = any>(
     url: string,
     data: BodyInit | Object | null,
@@ -237,19 +239,19 @@ export class Reqi {
   public async patch<T = any>(
     url: string,
     data: BodyInit | Object | null,
+    options: {
+      parsed: true;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
+  ): Promise<TResponse<T>>;
+  public async patch<T = any>(
+    url: string,
+    data: BodyInit | Object | null,
     options?: {
       parsed?: boolean;
       request?: Omit<RequestInit, 'body' | 'method'>;
     }
   ): Promise<Response>;
-  public async patch<T = any>(
-    url: string,
-    data: BodyInit | Object | null,
-    options?: {
-      parsed: true;
-      request?: Omit<RequestInit, 'body' | 'method'>;
-    }
-  ): Promise<TResponse<T>>;
   public async patch<T = any>(
     url: string,
     data: BodyInit | Object | null,

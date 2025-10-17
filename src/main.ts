@@ -11,13 +11,14 @@ if (import.meta.env.DEV) {
     cache: 'force-cache'
   });
 
-  const sendPost = async () => {
+  const sendPost = async (): Promise<{ message: string }> => {
     const res = await api.post(
       '/posts',
       {
         message: 'hello worl'
       },
       {
+        parsed: true,
         requset: {
           headers: {
             'Users-id': '1'
@@ -27,6 +28,7 @@ if (import.meta.env.DEV) {
     );
 
     console.log(res);
+    return res;
   };
 
   if (root) {
