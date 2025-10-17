@@ -1,6 +1,6 @@
 {
   "name": "@pksep/reqi",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "type": "module",
   "main": "./dist/pksep-reqi.umd.js",
   "module": "./dist/pksep-reqi.js",
@@ -15,7 +15,6 @@
     "dist"
   ],
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/pksep/reqi",
     "access": "public"
   },
   "repository": {
