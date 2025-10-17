@@ -78,8 +78,10 @@ export class Reqi {
   public async post<T = any>(
     url: string,
     data: BodyInit | Object | null,
-    parsed?: boolean,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed?: boolean;
+      requset?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<Response>;
   /**
    * Отправляет запрос с методом POST
@@ -93,24 +95,27 @@ export class Reqi {
   public async post<T = any>(
     url: string,
     data: BodyInit | Object | null,
-    parsed: true,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed: true;
+      requset?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<TResponse<T>>;
   public async post<T = any>(
     url: string,
     data: BodyInit | Object | null,
-    parsed?: boolean,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed?: boolean;
+      requset?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<Response | TResponse<T>> {
-    const response = await this.sendRequest<T>(
-      url,
-      {
+    const response = await this.sendRequest<T>(url, {
+      request: {
         method: 'POST',
         body: data,
-        ...options
+        ...options?.requset
       },
-      parsed
-    );
+      parsed: options?.parsed
+    });
 
     return response;
   }
@@ -123,8 +128,10 @@ export class Reqi {
    */
   public async get<T = any>(
     url: string,
-    parsed?: boolean,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed?: boolean;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<Response>;
   /**
    * Возвращает данные по указанному пути
@@ -136,49 +143,57 @@ export class Reqi {
    */
   public async get<T = any>(
     url: string,
-    parsed: true,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed: true;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<TResponse<T>>;
   public async get<T = any>(
     url: string,
-    parsed?: boolean,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed?: boolean;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<Response | TResponse<T>> {
-    const response = await this.sendRequest<T>(
-      url,
-      {
+    const response = await this.sendRequest<T>(url, {
+      request: {
         method: 'GET',
-        ...options
+        ...options?.request
       },
-      parsed
-    );
+      parsed: options?.parsed
+    });
 
     return response;
   }
 
   public async delete<T = any>(
     url: string,
-    parsed?: boolean,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed?: boolean;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<Response>;
   public async delete<T = any>(
     url: string,
-    parsed: true,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed: true;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<TResponse<T>>;
   public async delete<T = any>(
     url: string,
-    parsed?: boolean,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed?: boolean;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<Response | TResponse<T>> {
-    const response = await this.sendRequest<T>(
-      url,
-      {
+    const response = await this.sendRequest<T>(url, {
+      request: {
         method: 'DELETE',
-        ...options
+        ...options?.request
       },
-      parsed
-    );
+      parsed: options?.parsed
+    });
 
     return response;
   }
@@ -186,30 +201,35 @@ export class Reqi {
   public async put<T = any>(
     url: string,
     data: BodyInit | Object | null,
-    parsed?: boolean,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed?: boolean;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<Response>;
   public async put<T = any>(
     url: string,
     data: BodyInit | Object | null,
-    parsed: true,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed: true;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<TResponse<T>>;
   public async put<T = any>(
     url: string,
     data: BodyInit | Object | null,
-    parsed?: boolean,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed?: boolean;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<Response | TResponse<T>> {
-    const response = await this.sendRequest<T>(
-      url,
-      {
+    const response = await this.sendRequest<T>(url, {
+      request: {
         method: 'PUT',
         body: data,
-        ...options
+        ...options?.request
       },
-      parsed
-    );
+      parsed: options?.parsed
+    });
 
     return response;
   }
@@ -217,30 +237,35 @@ export class Reqi {
   public async patch<T = any>(
     url: string,
     data: BodyInit | Object | null,
-    parsed?: boolean,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed?: boolean;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<Response>;
   public async patch<T = any>(
     url: string,
     data: BodyInit | Object | null,
-    parsed: true,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed: true;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<TResponse<T>>;
   public async patch<T = any>(
     url: string,
     data: BodyInit | Object | null,
-    parsed?: boolean,
-    options?: Omit<RequestInit, 'body' | 'method'>
+    options?: {
+      parsed?: boolean;
+      request?: Omit<RequestInit, 'body' | 'method'>;
+    }
   ): Promise<Response | TResponse<T>> {
-    const response = await this.sendRequest<T>(
-      url,
-      {
+    const response = await this.sendRequest<T>(url, {
+      request: {
         method: 'PATCH',
         body: data,
-        ...options
+        ...options?.request
       },
-      parsed
-    );
+      parsed: options?.parsed
+    });
 
     return response;
   }
@@ -250,8 +275,10 @@ export class Reqi {
     options?: Omit<RequestInit, 'body' | 'method'>
   ): Promise<Response> {
     const response = await this.sendRequest<T>(url, {
-      method: 'HEAD',
-      ...options
+      request: {
+        method: 'HEAD',
+        ...options
+      }
     });
 
     return response;
@@ -267,8 +294,10 @@ export class Reqi {
    */
   public async sendRequest<T = any>(
     url: string,
-    request: Omit<RequestInit, 'body'> & { body?: BodyInit | Object | null },
-    parsed: true
+    options: {
+      request: Omit<RequestInit, 'body'> & { body?: BodyInit | Object | null };
+      parsed: true;
+    }
   ): Promise<TResponse<T>>;
   /**
    * Отправляет запрос с указанными параметрами
@@ -280,30 +309,34 @@ export class Reqi {
    */
   public async sendRequest<T = any>(
     url: string,
-    request: Omit<RequestInit, 'body'> & { body?: BodyInit | Object | null },
-    parsed?: boolean
+    options: {
+      request?: Omit<RequestInit, 'body'> & { body?: BodyInit | Object | null };
+      parsed?: boolean;
+    }
   ): Promise<Response>;
   public async sendRequest<T = any>(
     url: string,
-    request: Omit<RequestInit, 'body'> & { body?: BodyInit | Object | null },
-    parsed?: boolean
+    options: {
+      request: Omit<RequestInit, 'body'> & { body?: BodyInit | Object | null };
+      parsed?: boolean;
+    }
   ): Promise<TResponse<T> | Response> {
     // Создаем заголовки
-    const headers = new Headers(request?.headers || {});
+    const headers = new Headers(options.request?.headers || {});
 
     let formatedBody = null;
 
     // Если передан объект, то преобразуем его в json
-    if (typeof request.body === 'object') {
-      formatedBody = JSON.stringify(request.body);
+    if (typeof options.request.body === 'object') {
+      formatedBody = JSON.stringify(options.request.body);
       headers.set('Content-Type', 'application/json');
     } else {
-      formatedBody = request.body;
+      formatedBody = options.request.body;
     }
 
     // Отправляем запрос
     const response = await this._sendRequest(url, {
-      ...request,
+      ...options.request,
       body: formatedBody,
       headers
     });
@@ -314,7 +347,7 @@ export class Reqi {
     }
 
     // Если указан флаг парсинга, то парсим данные
-    if (parsed) {
+    if (options.parsed) {
       const result = await this.getData<T>(response);
 
       return result;

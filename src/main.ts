@@ -17,7 +17,13 @@ if (import.meta.env.DEV) {
       {
         message: 'hello worl'
       },
-      false
+      {
+        requset: {
+          headers: {
+            'Users-id': '1'
+          }
+        }
+      }
     );
 
     console.log(res);
