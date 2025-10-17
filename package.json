@@ -1,6 +1,6 @@
 {
   "name": "@pksep/reqi",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "type": "module",
   "main": "./dist/pksep-reqi.umd.js",
   "module": "./dist/pksep-reqi.js",
@@ -15,7 +15,8 @@
     "dist"
   ],
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/pksep/reqi"
+    "registry": "https://npm.pkg.github.com/pksep/reqi",
+    "access": "public"
   },
   "repository": {
     "url": "https://github.com/pksep/reqi.git"
@@ -24,7 +25,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "published": "pnpm build && pnpm publish"
+    "published": "pnpm build && pnpm publish --access public"
   },
   "devDependencies": {
     "@types/content-type": "^1.1.9",
