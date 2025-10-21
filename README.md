@@ -85,8 +85,9 @@ await api.post(
   {
     message: 'Hello world'
   },
-  // parsed = true
-  true
+  {
+    parsed: true
+  }
 );
 ```
 
@@ -95,11 +96,13 @@ await api.post(
 ```ts
 await api.post('/posts', {
   message: 'Hello world'
-}, false, {
-  headers: {
-    ...
-  },
-  credentials: 'include',
+}, {
+  request: {
+    headers: {
+      ...
+    },
+    credentials: 'include',
+  }
   ...
 });
 ```
