@@ -4,15 +4,7 @@
 
 ## Установка
 
-1. создать персональный токен (https://github.com/settings/tokens) на чтение пакетов (read:packages)
-2. в корневом файле .npmrc в проекте добавить следующие строчки:
-
-```
-@pksep:registry=https://npm.pkg.github.com/pksep
-//npm.pkg.github.com/:_authToken=ВАШ_ТОКЕН
-```
-
-3. `pnpm i @pksep/reqi`
+1. `pnpm i @pksep/reqi`
 
 ## Пример
 
