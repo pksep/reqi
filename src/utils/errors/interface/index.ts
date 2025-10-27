@@ -1,15 +1,68 @@
-import type { ValidationError } from '../client-error';
+import type {
+  BadRequestError,
+  ConflictError,
+  ContentTooLargeError,
+  ExpectationFailedError,
+  ForbiddenError,
+  GoneError,
+  LengthRequiredError,
+  LockedError,
+  MethodNotAllowedError,
+  MisdirectedRequestError,
+  NotAcceptableError,
+  NotFoundError,
+  PaymentRequiredError,
+  PreconditionFailedError,
+  PreconditionRequiredError,
+  ProxyAuthenticationRequiredError,
+  RequestHeaderFieldsTooLargeError,
+  RequestTimeoutError,
+  TooEarlyError,
+  TooManyRequestsError,
+  UnauthorizedError,
+  UnavailableForLegalReasonsError,
+  UnproccesableContentError,
+  UnsupportedMediaTypeError,
+  UpgradeRequiredError,
+  URITooLongError,
+  ValidationError
+} from '../client-error';
 import type { ClientError } from '../client-error/client-error';
 import type { HttpError } from '../http-error/http-error';
 import type { ServerError } from '../server-error/server-error';
 
-export type TResponseError =
+export type TClientError =
   | ValidationError
   | ClientError
-  | ServerError
-  | HttpError;
+  | ContentTooLargeError
+  | ConflictError
+  | URITooLongError
+  | UnsupportedMediaTypeError
+  | UnproccesableContentError
+  | UpgradeRequiredError
+  | UnavailableForLegalReasonsError
+  | UnauthorizedError
+  | TooEarlyError
+  | TooManyRequestsError
+  | RequestTimeoutError
+  | RequestHeaderFieldsTooLargeError
+  | RangeError
+  | NotAcceptableError
+  | NotFoundError
+  | MisdirectedRequestError
+  | MethodNotAllowedError
+  | LockedError
+  | LengthRequiredError
+  | GoneError
+  | ForbiddenError
+  | ExpectationFailedError
+  | PaymentRequiredError
+  | PreconditionFailedError
+  | PreconditionRequiredError
+  | ProxyAuthenticationRequiredError
+  | BadRequestError;
 
-export type TClientError = ClientError | ValidationError;
+export type TResponseError = ServerError | HttpError | TClientError;
 
 export interface IZodValidationError {
   code: string;
