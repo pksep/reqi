@@ -1,16 +1,19 @@
-import { ClientError } from '../client-error/client-error';
-import type { IZodValidationError } from '../interface';
+import type { IZodValidationError } from '../../../interface';
+import { BadRequestError } from '../bad-request-error/bad-request-error';
 
+/**
+ * Validation error inherited error from Bad Request Error.
+ */
 export class ValidationError<
   TFields extends string = string
-> extends ClientError {
+> extends BadRequestError {
   errorMessages: string[] = [];
   errorFields: string[] = [];
   errors: Record<TFields, string | undefined> = {} as Record<TFields, string>;
 
   constructor(message: string, errors?: IZodValidationError[]) {
     message = message || 'Validation error';
-    super(400, message);
+    super(message);
 
     if (errors) {
       const errorMessages = new Set<string>();
