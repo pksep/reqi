@@ -62,7 +62,9 @@ export type TClientError =
   | ProxyAuthenticationRequiredError
   | BadRequestError;
 
-export type TResponseError = ServerError | HttpError | TClientError;
+export type TServerError = ServerError;
+
+export type TResponseError = TServerError | HttpError | TClientError;
 
 export interface IZodValidationError {
   code: string;

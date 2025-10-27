@@ -30,8 +30,20 @@ import { HttpError } from '../http-error/http-error';
 import type {
   IZodValidationError,
   TClientError,
-  TResponseError
+  TResponseError,
+  TServerError
 } from '../interface';
+import { BadGatewayError } from '../server-error/codes/bad-gateway-error/bad-gateway-error';
+import { GatewayTimeoutError } from '../server-error/codes/gateway-timeout-error/gateway-timeout-error';
+import { HTTPVersionNotSupportedError } from '../server-error/codes/http-version-not-supported-error/http-version-not-supported-error';
+import { InsufficientStorageError } from '../server-error/codes/insufficient-storage-error/insufficient-storage-error';
+import { InternalServerError } from '../server-error/codes/internal-server-error/internal-server-error';
+import { LoopDetectedError } from '../server-error/codes/loop-detected-error/loop-detected-error';
+import { NetworkAuthenticationRequiredError } from '../server-error/codes/network-authentication-required-error/network-authentication-required-error';
+import { NotExtendedError } from '../server-error/codes/not-extended-error/not-extended-error';
+import { NotImplentedError } from '../server-error/codes/not-implented-error/not-implented-error';
+import { ServiceUnavailableError } from '../server-error/codes/service-unavailable-error/service-unavailable-error';
+import { VariantAlsoNegotiatesError } from '../server-error/codes/variant-also-negotiates-error/variant-also-negotiates-error';
 import { ServerError } from '../server-error/server-error';
 
 export const generateError = async (
@@ -44,7 +56,7 @@ export const generateError = async (
   }
 
   if (status >= 500) {
-    return new ServerError(status, response.statusText);
+    return generateServerError(response);
   }
 
   return new HttpError(response.status || 500, 'Unknown response type');
@@ -148,6 +160,53 @@ const generateClientError = async (
 
     default:
       return new ClientError(response.status, message);
+  }
+};
+
+const generateServerError = async (
+  response: Response
+): Promise<TServerError> => {
+  let message = response.statusText || '';
+  const json = await getJson(response);
+
+  message = json.message || message;
+
+  switch (response.status) {
+    case 500:
+      return new InternalServerError(message);
+
+    case 501:
+      return new NotImplentedError(message);
+
+    case 502:
+      return new BadGatewayError(message);
+
+    case 503:
+      return new ServiceUnavailableError(message);
+
+    case 504:
+      return new GatewayTimeoutError(message);
+
+    case 505:
+      return new HTTPVersionNotSupportedError(message);
+
+    case 506:
+      return new VariantAlsoNegotiatesError(message);
+
+    case 507:
+      return new InsufficientStorageError();
+
+    case 508:
+      return new LoopDetectedError();
+
+    case 510:
+      return new NotExtendedError();
+
+    case 511:
+      return new NetworkAuthenticationRequiredError();
+
+    default:
+      return new ServerError(response.status, message);
   }
 };
 
