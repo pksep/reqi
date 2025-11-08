@@ -2,6 +2,7 @@
   "name": "@pksep/reqi",
   "version": "0.0.21",
   "type": "module",
+  "license": "0BSD",
   "main": "./dist/pksep-reqi.umd.js",
   "module": "./dist/pksep-reqi.js",
   "types": "./dist/pksep-reqi.es.d.ts",
