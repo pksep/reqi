@@ -5,6 +5,7 @@
   "main": "./dist/pksep-reqi.umd.js",
   "module": "./dist/pksep-reqi.js",
   "types": "./dist/pksep-reqi.es.d.ts",
+  "license": "0BSD",
   "exports": {
     ".": {
       "import": "./dist/pksep-reqi.js",
