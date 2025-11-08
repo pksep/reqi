@@ -36,7 +36,7 @@
     "vite-plugin-dts": "^4.5.4"
   },
   "dependencies": {
-    "@sep-erp-server/zod-shared": "^0.0.462",
-    "content-type": "^1.0.5"
+    "content-type": "^1.0.5",
+    "lz-string": "^1.5.0"
   }
 }

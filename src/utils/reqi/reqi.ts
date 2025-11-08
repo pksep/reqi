@@ -1,9 +1,9 @@
-import { decompressJson } from '@sep-erp-server/zod-shared';
 import { parse } from 'content-type';
 import type { TResponse } from './interface';
 import { generateError } from '../errors/function';
 import { HttpError } from '../errors/http-error/http-error';
 import { mergeHeaders } from '../functions/merge-headers';
+import { decompressJson } from '../functions/compression'
 
 /**
  * Класс для работы с API

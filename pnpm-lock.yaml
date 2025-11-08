@@ -8,12 +8,12 @@ importers:
 
   .:
     dependencies:
-      '@sep-erp-server/zod-shared':
-        specifier: ^0.0.462
-        version: 0.0.462
       content-type:
         specifier: ^1.0.5
         version: 1.0.5
+      lz-string:
+        specifier: ^1.5.0
+        version: 1.5.0
     devDependencies:
       '@types/content-type':
         specifier: ^1.1.9
@@ -379,9 +379,6 @@ packages:
   '@rushstack/ts-command-line@5.1.1':
     resolution: {integrity: sha512-HPzFsUcr+wZ3oQI08Ec/E6cuiAVHKzrXZGHhwiwIGygAFiqN5QzX+ff30n70NU2WyE26CykgMwBZZSSyHCJrzA==}
 
-  '@sep-erp-server/zod-shared@0.0.462':
-    resolution: {integrity: sha512-J/w0FxyGvl3s3BVGlCREmEJu22a9skM9i9bQ4U6heGlZ8SNz97hWQyc25MeJQmqivWqf/hWtrcyIHz6zxkBhEg==}
-
   '@types/argparse@1.0.38':
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
 
@@ -390,9 +387,6 @@ packages:
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
-
-  '@types/lodash@4.17.20':
-    resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
 
   '@types/node@24.7.0':
     resolution: {integrity: sha512-IbKooQVqUBrlzWTi79E8Fw78l8k1RNtlDDNWsFZs7XonuQSJ8oNYfEeclhprUldXISRMLzBpILuKgPlIxm+/Yw==}
@@ -765,9 +759,6 @@ packages:
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
-
 snapshots:
 
   '@babel/helper-string-parser@7.27.1': {}
@@ -1017,20 +1008,11 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
 
-  '@sep-erp-server/zod-shared@0.0.462':
-    dependencies:
-      '@types/lodash': 4.17.20
-      lodash: 4.17.21
-      lz-string: 1.5.0
-      zod: 3.25.76
-
   '@types/argparse@1.0.38': {}
 
   '@types/content-type@1.1.9': {}
 
   '@types/estree@1.0.8': {}
-
-  '@types/lodash@4.17.20': {}
 
   '@types/node@24.7.0':
     dependencies:
@@ -1391,5 +1373,3 @@ snapshots:
   vscode-uri@3.1.0: {}
 
   yallist@4.0.0: {}
-
-  zod@3.25.76: {}
