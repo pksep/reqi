@@ -1,6 +1,6 @@
 import { decompressJson } from '@sep-erp-server/zod-shared';
 import { parse } from 'content-type';
-import type { TResponse } from './interface';
+import type { TOnType, TResponse } from './interface';
 import { generateError } from '../errors/function';
 import { HttpError } from '../errors/http-error/http-error';
 import { mergeHeaders } from '../functions/merge-headers';
@@ -57,6 +57,10 @@ export class Reqi {
       this.responseInterseptions.push(interseption);
     }
   };
+
+  private errorsFunctions: ((
+    error: HttpError
+  ) => Promise<HttpError> | HttpError)[] = [];
 
   constructor(
     private baseUrl: string = '',
@@ -345,7 +349,11 @@ export class Reqi {
 
     // Обрабатываем ошибки
     if (!response.ok) {
-      throw await generateError(response);
+      const error = await generateError(response);
+
+      this.errorsFunctions.forEach(callback => callback(error));
+
+      throw error;
     }
 
     // Если указан флаг парсинга, то парсим данные
@@ -439,6 +447,18 @@ export class Reqi {
     }
 
     throw new HttpError(500, 'Unknown response type');
+  }
+
+  public on(type: 'error', calle: (error: HttpError) => void): void;
+  /**
+   * Добавляем в очередь событий функции
+   * @param type
+   * @param calle
+   */
+  public on<T extends (...args: any[]) => any>(type: TOnType, calle: T): void {
+    if (type === 'error') {
+      this.errorsFunctions.push(calle);
+    }
   }
 
   /**

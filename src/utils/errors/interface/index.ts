@@ -15,6 +15,7 @@ import type {
   PreconditionFailedError,
   PreconditionRequiredError,
   ProxyAuthenticationRequiredError,
+  RangeNotSatisfiableError,
   RequestHeaderFieldsTooLargeError,
   RequestTimeoutError,
   TooEarlyError,
@@ -46,7 +47,7 @@ export type TClientError =
   | TooManyRequestsError
   | RequestTimeoutError
   | RequestHeaderFieldsTooLargeError
-  | RangeError
+  | RangeNotSatisfiableError
   | NotAcceptableError
   | NotFoundError
   | MisdirectedRequestError
