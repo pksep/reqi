@@ -1,5 +1,6 @@
 // ✅ Код ниже выполняется только при запуске через `vite dev`
 
+import { isValidationError } from './utils/errors';
 import { Reqi } from './utils/reqi/reqi';
 
 // (он просто манипулирует DOM для проверки)
@@ -12,23 +13,31 @@ if (import.meta.env.DEV) {
   });
 
   const sendPost = async (): Promise<{ message: string }> => {
-    const res = await api.post(
-      '/posts',
-      {
-        message: 'hello worl'
-      },
-      {
-        parsed: true,
-        requset: {
-          headers: {
-            'Users-id': '1'
+    try {
+      const res = await api.post(
+        '/posts',
+        {
+          message: 'hello worl'
+        },
+        {
+          parsed: true,
+          requset: {
+            headers: {
+              'Users-id': '1'
+            }
           }
         }
-      }
-    );
+      );
 
-    console.log(res);
-    return res;
+      console.log(res);
+      return res;
+    } catch (error) {
+      if (isValidationError<'message' | 'tabel'>(error)) {
+        error.errors.tabel;
+      }
+
+      throw error;
+    }
   };
 
   if (root) {

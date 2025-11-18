@@ -6,12 +6,16 @@
 
 1. `pnpm i @pksep/reqi`
 
-## Пример
+## Инициализация
 
 ```ts
 // Создание сущности для запросов на определенные сервер
 const api = new Reqi('https://jsonplaceholder.typicode.com');
+```
 
+## Пример
+
+```ts
 // Добавление для каждого запроса заголовка авторазиции
 // Обязательно возвращать request
 api.request.use((request: Request): Request => {
@@ -40,13 +44,6 @@ try {
   console.log(json);
 
   // Пример обработки ошибки
-  // Ошибки могут быть
-  // Серверные:
-  // ServerError: isServerError().
-  // Клиентские:
-  // ClientError: isClientError();
-  // NotFoundError: isNotFoundError();
-  // ValidationError: <T extends string = string> isValidationError<T>()
 } catch (error) {
   if (isClientError(error)) {
     console.log('Ошибка на стороне клиента');
@@ -97,4 +94,146 @@ await api.post('/posts', {
   }
   ...
 });
+```
+
+## Методы
+
+Список методов:
+
+- post
+- get
+- head
+- delete
+- put
+
+Если необходимо использовать другой метод - используйте `sendRequest`
+
+```ts
+api.sendRequest('/posts', {
+  request: {
+    method: 'OPTIONS'
+  }
+});
+```
+
+## Ошибки
+
+Если ошибка произошла при выполнение запроса, то сгенерируется ошибка типа `HttpError`, которая наследуется от `Error`.
+
+все последующие ошибки наследуются от `HttpError`
+
+При получение кодов ошибки делятся на серверный (`ServerError`) и клиентские (`ClientError`)
+
+Все типы ошибок имеют guard функцию на проверку типа ошибки и начинаются с `is`
+
+Пример для HttpError:
+
+```ts
+try {
+  const res = await api.get('/posts/error');
+} catch (err) {
+  if (isHttpError(err)) {
+    console.log(err.status, err.message);
+  }
+}
+```
+
+### HttpError
+
+Имеет поля:
+
+- `message: string`
+- `status: number`
+
+### ServerError
+
+Ошибки сервера 500 кодов
+
+Имеет дочерние ошибки:
+
+- 500: `InternalServerError`;
+- 501: `NotImplentedError`;
+- 502: `BadGatewayError`;
+- 503: `ServiceUnavailableError`;
+- 504: `GatewayTimeoutError`;
+- 505: `HTTPVersionNotSupportedError`;
+- 506: `VariantAlsoNegotiatesError`;
+- 507: `InsufficientStorageError`;
+- 508: `LoopDetectedError`;
+- 510: `NotExtendedError`;
+- 511: `NetworkAuthenticationRequiredError`.
+
+### ClientError
+
+Ошибки сервера 400 кодов
+
+Имеет дочерние ошибки:
+
+- 400: `BadRequestError` и `ValidationError`
+- 401: `UnauthorizedError`
+- 402: `PaymentRequiredError`
+- 403: `ForbiddenError`
+- 404: `NotFoundError`
+- 405: `MethodNotAllowedError`
+- 406: `NotAcceptableError`
+- 407: `ProxyAuthenticationRequiredError`
+- 408: `RequestTimeoutError`
+- 409: `ConflictError`
+- 410: `GoneError`
+- 411: `LengthRequiredError`
+- 412: `PreconditionFailedError`
+- 413: `ContentTooLargeError`
+- 414: `URITooLongError`
+- 415: `UnsupportedMediaTypeError`
+- 416: `RangeNotSatisfiableError`
+- 417: `ExpectationFailedError`
+- 421: `MisdirectedRequestError`
+- 423: `LockedError`
+- 422: `UnproccesableContentError`
+- 424: `FailedDependencyError`
+- 425: `TooEarlyError`
+- 426: `UpgradeRequiredError`
+- 428: `PreconditionRequiredError`
+- 429: `TooManyRequestsError`
+- 431: `RequestHeaderFieldsTooLargeError`
+- 451: `UnavailableForLegalReasonsError`
+
+#### ValidationError
+
+Ошибка характерезующая, что запрос не прошел валидацию на сервере.
+Генерируется при возврате ошибки на клиент, когда сервер возращает ошибку с кодом 400 и имеет в ответе поле `errors` с массивом ошибок
+
+Имеет поля:
+
+- `errorMessages: string[]` - массив сообщений ошибок
+- `errorFields: string[]` - массив с полями, в которых передана ошибока
+- `errors: <TFields extends string = string> Record<TFields, string | undefined>` - объект {[поле]: [сообщение ошибки]}
+
+Рекомендация использовать zod ошибки `IZodValidationError` или схожую стуктура для возврата ошибки валидации на клиент
+Необходимая структура `errors`:
+
+```ts
+const errors {
+  message?: string // сообщение ошибки
+  path: string[] // наименование полей ошибки
+} = {
+  ...
+}
+```
+
+Можно также типизировать поле `errors` в конечном объекте при помощи generic
+
+Пример:
+
+```ts
+try {
+  const res = await api.post('/posts/error', data);
+} catch (err) {
+  if (isValidationError<'message' | 'tabel'>(err)) {
+    const { message, tabel } = err.errors;
+
+    console.log(message); // сообщение ошибки поля message
+    console.log(tabel); // сообщение ошибки поля tabel
+  }
+}
 ```
