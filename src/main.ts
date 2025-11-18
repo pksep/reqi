@@ -1,6 +1,11 @@
 // ✅ Код ниже выполняется только при запуске через `vite dev`
 
-import { isValidationError } from './utils/errors';
+import {
+  BadRequestError,
+  isBadRequestError,
+  isHttpError,
+  isValidationError
+} from './utils/errors';
 import { Reqi } from './utils/reqi/reqi';
 
 // (он просто манипулирует DOM для проверки)
@@ -12,10 +17,14 @@ if (import.meta.env.DEV) {
     cache: 'force-cache'
   });
 
+  api.on('error', () => {
+    console.log('onError');
+  });
+
   const sendPost = async (): Promise<{ message: string }> => {
     try {
       const res = await api.post(
-        '/posts',
+        '/posts1',
         {
           message: 'hello worl'
         },
@@ -32,8 +41,8 @@ if (import.meta.env.DEV) {
       console.log(res);
       return res;
     } catch (error) {
-      if (isValidationError<'message' | 'tabel'>(error)) {
-        error.errors.tabel;
+      if (isHttpError(error)) {
+        console.log('isHttpError');
       }
 
       throw error;

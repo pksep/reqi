@@ -3,7 +3,8 @@ import type { TOnType, TResponse } from './interface';
 import { generateError } from '../errors/function';
 import { HttpError } from '../errors/http-error/http-error';
 import { mergeHeaders } from '../functions/merge-headers';
-import { decompressJson } from '../functions/compression'
+import { decompressJson } from '../functions/compression';
+import type { TResponseError } from '../errors';
 
 /**
  * Класс для работы с API
@@ -449,7 +450,7 @@ export class Reqi {
     throw new HttpError(500, 'Unknown response type');
   }
 
-  public on(type: 'error', calle: (error: HttpError) => void): void;
+  public on(type: 'error', calle: (error: TResponseError) => void): void;
   /**
    * Добавляем в очередь событий функции
    * @param type

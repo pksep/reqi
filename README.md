@@ -10,7 +10,7 @@
 
 ```ts
 // Создание сущности для запросов на определенные сервер
-const api = new Reqi('https://jsonplaceholder.typicode.com');
+const api = new Reqi('https://your-server.com');
 ```
 
 ## Пример
@@ -100,11 +100,12 @@ await api.post('/posts', {
 
 Список методов:
 
-- post
-- get
-- head
-- delete
-- put
+- post;
+- patch;
+- get;
+- head;
+- delete;
+- put.
 
 Если необходимо использовать другой метод - используйте `sendRequest`
 
@@ -116,13 +117,78 @@ api.sendRequest('/posts', {
 });
 ```
 
+## Модификаия запроса
+
+Запросы можно модифицировать при отправке запроса и получения ответа.
+
+Полезные пример:
+
+- Вставка jwt токена при отправке каждого запроса из localStorage.
+
+Для модифицирования запроса необходимо использовать функция `use`.
+
+Модификация полученного запроса: `api.response.use`
+Модификация отправки запроса: `api.request.use`
+
+Каждая модификация обязательно должна возвращать объект модификации в ответ
+
+Пример:
+
+```ts
+const api = new Reqi('https://your-server.com');
+
+api.request.use(request => {
+  const userId = getUserId();
+  request.headers.set('userId', `${userId}`);
+  return request;
+});
+```
+
+## События
+
+На каждый объект `Reqi` можно поставить слушатели и назначить функция для выполения при срабатывания слушателя.
+
+Слушатели отработаю по принципу FIFO
+
+Типы слушателей:
+
+- `error` - обработчик ошибок
+
+### Событие ошибки (`error`)
+
+Срабатывает после генерации ошибки, но до того как она будет выброшена на клиент
+(не блокирует поток выполнения кода. setTimeout может сработать после участка `catch`)
+
+Функция обработки принимает в себя сгенерированную ошибку
+
+Пример:
+
+```ts
+const api = new Reqi('https://your-server.com');
+
+api.on('error', (error: TResponseError) => {
+  console.log('onError');
+});
+
+try {
+  const res = await api.get('/posts/error');
+} catch (err) {
+  if (isHttpError(err)) {
+    console.log(err.status, err.message);
+  }
+}
+
+// onError
+// [status] [message]
+```
+
 ## Ошибки
 
 Если ошибка произошла при выполнение запроса, то сгенерируется ошибка типа `HttpError`, которая наследуется от `Error`.
 
 все последующие ошибки наследуются от `HttpError`
 
-При получение кодов ошибки делятся на серверный (`ServerError`) и клиентские (`ClientError`)
+При получение кодов, ошибки делятся на серверные (`ServerError`) и клиентские (`ClientError`)
 
 Все типы ошибок имеют guard функцию на проверку типа ошибки и начинаются с `is`
 
@@ -169,34 +235,34 @@ try {
 
 Имеет дочерние ошибки:
 
-- 400: `BadRequestError` и `ValidationError`
-- 401: `UnauthorizedError`
-- 402: `PaymentRequiredError`
-- 403: `ForbiddenError`
-- 404: `NotFoundError`
-- 405: `MethodNotAllowedError`
-- 406: `NotAcceptableError`
-- 407: `ProxyAuthenticationRequiredError`
-- 408: `RequestTimeoutError`
-- 409: `ConflictError`
-- 410: `GoneError`
-- 411: `LengthRequiredError`
-- 412: `PreconditionFailedError`
-- 413: `ContentTooLargeError`
-- 414: `URITooLongError`
-- 415: `UnsupportedMediaTypeError`
-- 416: `RangeNotSatisfiableError`
-- 417: `ExpectationFailedError`
-- 421: `MisdirectedRequestError`
-- 423: `LockedError`
-- 422: `UnproccesableContentError`
-- 424: `FailedDependencyError`
-- 425: `TooEarlyError`
-- 426: `UpgradeRequiredError`
-- 428: `PreconditionRequiredError`
-- 429: `TooManyRequestsError`
-- 431: `RequestHeaderFieldsTooLargeError`
-- 451: `UnavailableForLegalReasonsError`
+- 400: `BadRequestError` и `ValidationError`;
+- 401: `UnauthorizedError`;
+- 402: `PaymentRequiredError`;
+- 403: `ForbiddenError`;
+- 404: `NotFoundError`;
+- 405: `MethodNotAllowedError`;
+- 406: `NotAcceptableError`;
+- 407: `ProxyAuthenticationRequiredError`;
+- 408: `RequestTimeoutError`;
+- 409: `ConflictError`;
+- 410: `GoneError`;
+- 411: `LengthRequiredError`;
+- 412: `PreconditionFailedError`;
+- 413: `ContentTooLargeError`;
+- 414: `URITooLongError`;
+- 415: `UnsupportedMediaTypeError`;
+- 416: `RangeNotSatisfiableError`;
+- 417: `ExpectationFailedError`;
+- 421: `MisdirectedRequestError`;
+- 423: `LockedError`;
+- 422: `UnproccesableContentError`;
+- 424: `FailedDependencyError`;
+- 425: `TooEarlyError`;
+- 426: `UpgradeRequiredError`;
+- 428: `PreconditionRequiredError`;
+- 429: `TooManyRequestsError`;
+- 431: `RequestHeaderFieldsTooLargeError`;
+- 451: `UnavailableForLegalReasonsError`.
 
 #### ValidationError
 
