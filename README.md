@@ -167,6 +167,7 @@ api.request.use(request => {
 const api = new Reqi('https://your-server.com');
 
 api.on('error', (error: TResponseError) => {
+  console.log(error.status);
   console.log('onError');
 });
 
@@ -178,6 +179,7 @@ try {
   }
 }
 
+// [status]
 // onError
 // [status] [message]
 ```
