@@ -277,7 +277,7 @@ try {
 - `errorFields: string[]` - массив с полями, в которых передана ошибока
 - `errors: <TFields extends string = string> Record<TFields, string | undefined>` - объект {[поле]: [сообщение ошибки]}
 
-Рекомендация использовать zod ошибки `IZodValidationError` или схожую стуктура для возврата ошибки валидации на клиент
+Рекомендация использовать zod ошибки `IZodValidationError` или схожую стуктура для возврата ошибки валидации на клиент.
 Необходимая структура `errors`:
 
 ```ts
