@@ -1,11 +1,6 @@
 // ✅ Код ниже выполняется только при запуске через `vite dev`
 
-import {
-  BadRequestError,
-  isBadRequestError,
-  isHttpError,
-  isValidationError
-} from './utils/errors';
+import { isHttpError } from './utils/errors';
 import { Reqi } from './utils/reqi/reqi';
 
 // (он просто манипулирует DOM для проверки)
