@@ -334,7 +334,10 @@ export class Reqi {
     let formatedBody = null;
 
     // Если передан объект, то преобразуем его в json
-    if (typeof options.request.body === 'object') {
+    if (
+      typeof options.request.body === 'object' &&
+      !(options.request.body instanceof FormData)
+    ) {
       formatedBody = JSON.stringify(options.request.body);
       headers.set('Content-Type', 'application/json');
     } else {
