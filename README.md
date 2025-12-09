@@ -1,39 +1,39 @@
-## REQI класс
+## Reqi Class
 
-Данный класс используются для реализации отправки запросы на сервера с учетом специфики sep проектов
+This class is used to implement sending requests to servers considering the specifics of sep projects.
 
-## Установка
+## Installation
 
 1. `pnpm i @pksep/reqi`
 
-## Инициализация
+## Initialization
 
 ```ts
-// Создание сущности для запросов на определенные сервер
+// Creating an entity for requests to a specific server
 const api = new Reqi('https://your-server.com');
 ```
 
-## Пример
+## Example
 
 ```ts
-// Добавление для каждого запроса заголовка авторазиции
-// Обязательно возвращать request
+// Adding an authorization header to each request
+// Must return the request object
 api.request.use((request: Request): Request => {
   request.headers.set('Authorization', 'token');
 
   return request;
 });
 
-// Обработка
+// Handling responses
 api.response.use((response: Response): Response => {
   if (!response.ok) {
-    console.log('Здесь можно реализовать логирование');
+    console.log('Logging can be implemented here');
   }
 
   return response;
 });
 
-// Пример использования отправки запросов
+// Example of using request sending
 try {
   const response = await api.post('/posts', {
     message: 'Hello world'
@@ -43,20 +43,20 @@ try {
 
   console.log(json);
 
-  // Пример обработки ошибки
+  // Example of error handling
 } catch (error) {
   if (isClientError(error)) {
-    console.log('Ошибка на стороне клиента');
+    console.log('Client-side error');
   }
 
-  // Интерфейс для проверки типизации
+  // Interface for type checking
   interface testAuthValidate {
     login?: string;
     tabel?: string;
     password?: string;
   }
 
-  // Пример обработки валидации
+  // Example of validation handling
   if (isValidationError<keyof testAuthValidate>(error)) {
     console.log(error.errors.login);
     console.log(error.message);
@@ -64,9 +64,9 @@ try {
 }
 ```
 
-### Работа с декодером
+### Working with the decoder
 
-в любой запрос необходимо добавить parsed = true
+Add `parsed = true` to any request.
 
 ```ts
 await api.post(
@@ -80,7 +80,7 @@ await api.post(
 );
 ```
 
-### Работа с дополнительными параметрами
+### Working with additional parameters
 
 ```ts
 await api.post('/posts', {
@@ -96,9 +96,9 @@ await api.post('/posts', {
 });
 ```
 
-## Методы
+## Methods
 
-Список методов:
+List of methods:
 
 - post;
 - patch;
@@ -107,7 +107,7 @@ await api.post('/posts', {
 - delete;
 - put.
 
-Если необходимо использовать другой метод - используйте `sendRequest`
+If you need to use another method, use `sendRequest`
 
 ```ts
 api.sendRequest('/posts', {
@@ -117,22 +117,22 @@ api.sendRequest('/posts', {
 });
 ```
 
-## Модификаия запроса
+## Request Modification
 
-Запросы можно модифицировать при отправке запроса и получения ответа.
+Requests can be modified when sending requests and receiving responses.
 
-Полезные пример:
+Useful examples:
 
-- Вставка jwt токена при отправке каждого запроса из localStorage.
+- Inserting a JWT token into each request from localStorage.
 
-Для модифицирования запроса необходимо использовать функция `use`.
+To modify requests, use the `use` function.
 
-Модификация полученного запроса: `api.response.use`
-Модификация отправки запроса: `api.request.use`
+Modifying received requests: `api.response.use`
+Modifying sent requests: `api.request.use`
 
-Каждая модификация обязательно должна возвращать объект модификации в ответ
+Each modification must return the modification object back.
 
-Пример:
+Example:
 
 ```ts
 const api = new Reqi('https://your-server.com');
@@ -144,24 +144,24 @@ api.request.use(request => {
 });
 ```
 
-## События
+## Events
 
-На каждый объект `Reqi` можно поставить слушатели и назначить функция для выполения при срабатывания слушателя.
+Listeners can be attached to each `Reqi` object and assign functions to execute when the listener is triggered.
 
-Слушатели отработаю по принципу FIFO
+Listeners operate on a FIFO principle.
 
-Типы слушателей:
+Types of listeners:
 
-- `error` - обработчик ошибок
+- `error` - error handler
 
-### Событие ошибки (`error`)
+### Error event (`error`)
 
-Срабатывает после генерации ошибки, но до того как она будет выброшена на клиент
-(не блокирует поток выполнения кода. setTimeout может сработать после участка `catch`)
+Triggers after error generation but before it is thrown to the client
+(does not block the code execution flow. setTimeout can execute after the `catch` block)
 
-Функция обработки принимает в себя сгенерированную ошибку
+The handler function accepts the generated error as input.
 
-Пример:
+Example:
 
 ```ts
 const api = new Reqi('https://your-server.com');
@@ -184,17 +184,17 @@ try {
 // [status] [message]
 ```
 
-## Ошибки
+## Errors
 
-Если ошибка произошла при выполнение запроса, то сгенерируется ошибка типа `HttpError`, которая наследуется от `Error`.
+If an error occurs during request execution, an `HttpError` type error will be generated, which inherits from `Error`.
 
-все последующие ошибки наследуются от `HttpError`
+All subsequent errors inherit from `HttpError`.
 
-При получение кодов, ошибки делятся на серверные (`ServerError`) и клиентские (`ClientError`)
+Based on the received codes, errors are divided into server errors (`ServerError`) and client errors (`ClientError`).
 
-Все типы ошибок имеют guard функцию на проверку типа ошибки и начинаются с `is`
+All error types have guard functions for checking error types and begin with `is`.
 
-Пример для HttpError:
+Example for HttpError:
 
 ```ts
 try {
@@ -208,19 +208,19 @@ try {
 
 ### HttpError
 
-Имеет поля:
+Has fields:
 
 - `message: string`
 - `status: number`
 
 ### ServerError
 
-Ошибки сервера 500 кодов
+Server errors with 500 codes.
 
-Имеет дочерние ошибки:
+Has child errors:
 
 - 500: `InternalServerError`;
-- 501: `NotImplentedError`;
+- 501: `NotImplementedError`;
 - 502: `BadGatewayError`;
 - 503: `ServiceUnavailableError`;
 - 504: `GatewayTimeoutError`;
@@ -233,11 +233,11 @@ try {
 
 ### ClientError
 
-Ошибки сервера 400 кодов
+Client errors with 400 codes.
 
-Имеет дочерние ошибки:
+Has child errors:
 
-- 400: `BadRequestError` и `ValidationError`;
+- 400: `BadRequestError` and `ValidationError`;
 - 401: `UnauthorizedError`;
 - 402: `PaymentRequiredError`;
 - 403: `ForbiddenError`;
@@ -257,7 +257,7 @@ try {
 - 417: `ExpectationFailedError`;
 - 421: `MisdirectedRequestError`;
 - 423: `LockedError`;
-- 422: `UnproccesableContentError`;
+- 422: `UnprocessableContentError`;
 - 424: `FailedDependencyError`;
 - 425: `TooEarlyError`;
 - 426: `UpgradeRequiredError`;
@@ -268,30 +268,30 @@ try {
 
 #### ValidationError
 
-Ошибка характерезующая, что запрос не прошел валидацию на сервере.
-Генерируется при возврате ошибки на клиент, когда сервер возращает ошибку с кодом 400 и имеет в ответе поле `errors` с массивом ошибок
+An error indicating that the request failed validation on the server.
+Generated when returning an error to the client when the server returns an error with code 400 and has an `errors` field with an array of errors in the response.
 
-Имеет поля:
+Has fields:
 
-- `errorMessages: string[]` - массив сообщений ошибок
-- `errorFields: string[]` - массив с полями, в которых передана ошибока
-- `errors: <TFields extends string = string> Record<TFields, string | undefined>` - объект {[поле]: [сообщение ошибки]}
+- `errorMessages: string[]` - array of error messages
+- `errorFields: string[]` - array with fields containing errors
+- `errors: <TFields extends string = string> Record<TFields, string | undefined>` - object {[field]: [error message]}
 
-Рекомендация использовать zod ошибки `IZodValidationError` или схожую стуктура для возврата ошибки валидации на клиент.
-Необходимая структура `errors`:
+It is recommended to use zod errors `IZodValidationError` or a similar structure for returning validation errors to the client.
+The required structure for `errors` is:
 
 ```ts
 const errors {
-  message?: string // сообщение ошибки
-  path: string[] // наименование полей ошибки
+  message?: string // error message
+  path: string[] // field names in error
 } = {
   ...
 }
 ```
 
-Можно также типизировать поле `errors` в конечном объекте при помощи generic
+You can also type the `errors` field in the final object using generics.
 
-Пример:
+Example:
 
 ```ts
 try {
@@ -300,8 +300,8 @@ try {
   if (isValidationError<'message' | 'tabel'>(err)) {
     const { message, tabel } = err.errors;
 
-    console.log(message); // сообщение ошибки поля message
-    console.log(tabel); // сообщение ошибки поля tabel
+    console.log(message); // error message for field message
+    console.log(tabel); // error message for field tabel
   }
 }
 ```
