@@ -1,6 +1,6 @@
 {
   "name": "@pksep/reqi",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "type": "module",
   "license": "0BSD",
   "main": "./dist/pksep-reqi.umd.cjs",
