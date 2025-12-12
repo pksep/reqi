@@ -1,3 +1,4 @@
+import { parse } from 'content-type';
 import { NotFoundError, ValidationError } from '../client-error';
 import { ClientError } from '../client-error/client-error';
 import { BadRequestError } from '../client-error/codes/bad-request-error/bad-request-error';
@@ -27,12 +28,7 @@ import { UnsupportedMediaTypeError } from '../client-error/codes/unsupported-med
 import { UpgradeRequiredError } from '../client-error/codes/upgrade-required-error/upgrade-required-error';
 import { URITooLongError } from '../client-error/codes/uri-too-long-error/uri-too-long-error';
 import { HttpError } from '../http-error/http-error';
-import type {
-  IZodValidationError,
-  TClientError,
-  TResponseError,
-  TServerError
-} from '../interface';
+import type { TClientError, TResponseError, TServerError } from '../interface';
 import { BadGatewayError } from '../server-error/codes/bad-gateway-error/bad-gateway-error';
 import { GatewayTimeoutError } from '../server-error/codes/gateway-timeout-error/gateway-timeout-error';
 import { HTTPVersionNotSupportedError } from '../server-error/codes/http-version-not-supported-error/http-version-not-supported-error';
@@ -66,15 +62,19 @@ const generateClientError = async (
   response: Response
 ): Promise<TClientError> => {
   let message = response.statusText || '';
-  const json = await getJson(response);
+  const type = parse(response.headers.get('Content-Type') || 'text/html');
+  let json;
+  if (type.type === 'application/json') {
+    json = await response.json();
+  }
 
-  message = json.message || message;
+  message = json?.message || message;
 
   switch (response.status) {
     case 400:
       // Если есть  errors, то возвращаем ValidationError
       if (json.errors) {
-        return new ValidationError(message, json.errors);
+        return new ValidationError(message, json?.errors || []);
         // Иначе возвращаем BadRequestError
       } else {
         return new BadRequestError(message);
@@ -167,7 +167,14 @@ const generateServerError = async (
   response: Response
 ): Promise<TServerError> => {
   let message = response.statusText || '';
-  const json = await getJson(response);
+
+  const type = parse(response.headers.get('Content-Type') || 'text/html');
+
+  let json;
+
+  if (type.type === 'application/json') {
+    json = await response.json();
+  }
 
   message = json.message || message;
 
@@ -208,16 +215,4 @@ const generateServerError = async (
     default:
       return new ServerError(response.status, message);
   }
-};
-
-const getJson = async <
-  T extends {
-    message?: string;
-    statusCode?: number;
-    errors?: IZodValidationError[];
-  }
->(
-  response: Response
-): Promise<T> => {
-  return await response.json();
 };
